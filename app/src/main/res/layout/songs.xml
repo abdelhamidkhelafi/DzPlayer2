@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/songsLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,5 +11,49 @@
     <ListView
         android:id="@+id/songsListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</android.support.constraint.ConstraintLayout>
+        android:layout_height="495dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <AbsoluteLayout
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="619dp">
+
+        <ImageButton
+            android:id="@+id/playSongView"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_x="3dp"
+            android:layout_y="14dp"
+            android:background="@drawable/transparent_bg_bordered"
+            app:srcCompat="@android:drawable/ic_media_play" />
+
+        <ImageButton
+            android:id="@+id/microView"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_x="245dp"
+            android:layout_y="13dp"
+            android:background="@drawable/transparent_bg_bordered"
+            app:srcCompat="@android:drawable/ic_btn_speak_now"
+            tools:layout_editor_absoluteX="1dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+        <ImageButton
+            android:id="@+id/stopSongView"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_x="123dp"
+            android:layout_y="13dp"
+            android:background="@drawable/transparent_bg_bordered"
+            app:srcCompat="@android:drawable/ic_media_pause"
+            tools:layout_editor_absoluteX="183dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+
+    </AbsoluteLayout>
+</LinearLayout>
