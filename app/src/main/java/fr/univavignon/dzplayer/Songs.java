@@ -1,4 +1,5 @@
 package fr.univavignon.dzplayer;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class Songs extends Fragment {
+    MediaPlayer mediaPlayer ;
     ArrayList<String> data = new ArrayList<>();
     @Nullable
     @Override
@@ -41,14 +43,19 @@ public class Songs extends Fragment {
         playImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(),"salam",Toast.LENGTH_LONG).show();
+                if(mediaPlayer == null){
+                    mediaPlayer = MediaPlayer.create(getContext(),R.raw.kounti);
+
+                }
+                mediaPlayer.start();
             }
         });
         ImageButton stopImage = (ImageButton) view.findViewById(R.id.stopSongView);
         stopImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(),"stop",Toast.LENGTH_LONG).show();
+                if(mediaPlayer.isPlaying())
+                mediaPlayer.pause();
             }
         });
         ImageButton microImage = (ImageButton) view.findViewById(R.id.microView);
