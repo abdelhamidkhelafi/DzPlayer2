@@ -18,17 +18,27 @@ import java.util.ArrayList;
 
 public class Songs extends Fragment {
     MediaPlayer mediaPlayer ;
+    ImageButton playImage;
+    ImageButton stopImage;
+    ImageButton microImage;
     ArrayList<String> data = new ArrayList<>();
+    ArrayList<Song> songsArray = new ArrayList<>();
+    boolean isRecording=false;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.songs,container,false);
-       // ArrayList<String> data = new ArrayList<>();
-        data.add("♬ Soolking tata");
-        data.add("♬ Soolking vroom vroom");
-        data.add("♬ MAMI ma vie deux fois");
-        data.add("♬ Khaled aicha");
-        data.add("♬ Fianso Lundi");
+        // GETTING THE ARRAY LIST FROM SERVER //
+        songsArray.add(new Song("Tata ","Soolking","url"));
+        songsArray.add(new Song("Dalida ","Soolking","url"));
+        songsArray.add(new Song("Aicha ","Khelad","url"));
+        songsArray.add(new Song("Deux fois","mami","url"));
+        songsArray.add(new Song("Lundi ","Fianso","url"));
+        // ................................... //
+        for(Song song :songsArray){
+            data.add("♬ "+song.getSinger()+" "+song.getName());
+        }
 
 
         ArrayAdapter<String> adapter  = new ArrayAdapter<String>(
@@ -39,18 +49,20 @@ public class Songs extends Fragment {
         ListView lv;
         lv =(ListView) view.findViewById(R.id.songsListView);
         lv.setAdapter(adapter);
-        ImageButton playImage = (ImageButton) view.findViewById(R.id.playSongView);
+
+        playImage = (ImageButton) view.findViewById(R.id.playSongView);
         playImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mediaPlayer == null){
-                    mediaPlayer = MediaPlayer.create(getContext(),R.raw.kounti);
+
 
                 }
                 mediaPlayer.start();
             }
         });
-        ImageButton stopImage = (ImageButton) view.findViewById(R.id.stopSongView);
+
+        stopImage = (ImageButton) view.findViewById(R.id.stopSongView);
         stopImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,18 +70,29 @@ public class Songs extends Fragment {
                 mediaPlayer.pause();
             }
         });
-        ImageButton microImage = (ImageButton) view.findViewById(R.id.microView);
+
+        microImage = (ImageButton) view.findViewById(R.id.microView);
+        microImage.setImageResource(R.drawable.ic_mic_black_24dp);
         microImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(),"micro",Toast.LENGTH_LONG).show();
+                if(isRecording){
+
+                    microImage.setImageResource(R.drawable.ic_mic_black_24dp);
+                    isRecording=false;
+
+                }else{
+                    isRecording=true;
+                    microImage.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp);
+                }
+
             }
         });
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(),data.get(position),Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(),songsArray.get(position).getName(),Toast.LENGTH_LONG).show();
             }
         });
         return view;

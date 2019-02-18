@@ -5,6 +5,12 @@ public class Song {
     private String singer;
     private String url;
 
+    public Song(String name, String singer, String url) {
+        this.name = name;
+        this.singer = singer;
+        this.url = url;
+    }
+
     public String getName() {
         return name;
     }
