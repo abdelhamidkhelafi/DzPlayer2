@@ -52,7 +52,7 @@
             tools:layout_editor_absoluteY="0dp" />
 
         <ImageButton
-            android:id="@+id/stopSongView"
+            android:id="@+id/stopAlbumsView"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:layout_x="123dp"

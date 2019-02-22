@@ -2,6 +2,7 @@ package fr.univavignon.dzplayer;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private albums albumsView=new albums();
     private Songs songsView = new Songs();
-
+    MediaPlayer mediaPlayer = new MediaPlayer() ;
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
 
@@ -99,11 +100,10 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
                 switch (position){
                     case 0:
-
-
-                    return  songsView;
+                        songsView.setMediaPlayer(mediaPlayer);
+                        return  songsView;
                     case 1:
-
+                        albumsView.setMediaPlayer(mediaPlayer);
                         return  albumsView;
 
                 }

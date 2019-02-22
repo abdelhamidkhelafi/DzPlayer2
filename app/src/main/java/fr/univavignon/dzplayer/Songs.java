@@ -1,5 +1,7 @@
 package fr.univavignon.dzplayer;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Songs extends Fragment {
@@ -54,11 +57,17 @@ public class Songs extends Fragment {
         playImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mediaPlayer == null){
 
+                try {
 
+                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    mediaPlayer.setDataSource("http://www.panacherock.com/downloads/mp3/01_-_Stormy_Weather.mp3");
+                    mediaPlayer.prepare();
+                    mediaPlayer.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                mediaPlayer.start();
+
             }
         });
 
@@ -92,10 +101,21 @@ public class Songs extends Fragment {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(),songsArray.get(position).getName(),Toast.LENGTH_LONG).show();
+
             }
         });
+
         return view;
     }
+
+
+    public void setMediaPlayer(MediaPlayer m){
+        mediaPlayer = m;
+
+    }
+
+
+
+
 
 }
