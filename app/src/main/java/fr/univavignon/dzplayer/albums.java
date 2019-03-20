@@ -32,7 +32,7 @@ public class albums extends Fragment {
     ImageButton stopImage;
     ImageButton microImage;
     MediaPlayer mediaPlayer ;
-    MediaRecorder myAudioRecorder = new MediaRecorder();
+    MediaRecorder myAudioRecorder ;
     String outputFile;
 
     boolean isRecording=false;
@@ -44,11 +44,11 @@ public class albums extends Fragment {
         View view = inflater.inflate(R.layout.albums,container,false);
 
         /* ************************************ recorder ************************/
-        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "AudioRecording.3gp";
+        /*outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "AudioRecording.3gp";
         myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.DEFAULT);
-        myAudioRecorder.setOutputFile(outputFile);
+        myAudioRecorder.setOutputFile(outputFile);*/
 
 
         /* ************************************ Items ************************/
@@ -181,6 +181,10 @@ public class albums extends Fragment {
 
     public void setMediaPlayer(MediaPlayer m){
         mediaPlayer = m;
+
+    }
+    public void setMediaRecorder (MediaRecorder m){
+        myAudioRecorder = m;
 
     }
 }
