@@ -15,11 +15,32 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
-import org.apache.http.*;
 
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.SimpleMultiPartRequest;
+
+import com.android.volley.toolbox.Volley;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Songs extends Fragment {
     MediaPlayer mediaPlayer ;
@@ -36,7 +57,7 @@ public class Songs extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.songs,container,false);
-        AudioSavePathInDevice = getContext().getExternalCacheDir().getAbsolutePath()+ "/" + "AudioRecording.raw";
+        AudioSavePathInDevice = getContext().getExternalCacheDir().getAbsolutePath()+ "/" + "AudioRecording.amr";
         // GETTING THE ARRAY LIST FROM SERVER //
         songsArray.add(new Song("Tata ","Soolking","url"));
         songsArray.add(new Song("Dalida ","Soolking","url"));
@@ -107,31 +128,80 @@ public class Songs extends Fragment {
                     microImage.setImageResource(R.drawable.ic_mic_black_24dp);
                     mediaRecorder.stop();
                     isRecording=false;
-                    Toast.makeText(getContext(), "Stop recording ",
-                            Toast.LENGTH_SHORT).show();
 
 
-                    try {
-                        HttpPost httppost = new HttpPost(uri);
 
 
-                        File f = new File(AudioSavePathInDevice);;
-                        FileBody bin = new FileBody(f);
+
+                       /* URL serverUrl =
+                                new URL("http://192.168.43.204:8080/uploadFile");
+                        HttpURLConnection urlConnection = (HttpURLConnection) serverUrl.openConnection();
+
+                        String boundaryString = "----SomeRandomText";
+                        String fileUrl = AudioSavePathInDevice;
+                        File logFileToUpload = new File(fileUrl);
+
+                        urlConnection.setDoOutput(true);
+                        urlConnection.setRequestMethod("POST");
+                        urlConnection.addRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundaryString);
+
+                        OutputStream outputStreamToRequestBody = urlConnection.getOutputStream();
+                        BufferedWriter httpRequestBodyWriter =
+                                new BufferedWriter(new OutputStreamWriter(outputStreamToRequestBody));
+                        httpRequestBodyWriter.write("\n\n--" + boundaryString + "\n");
+                        httpRequestBodyWriter.write("Content-Disposition: form-data; name=\"myFileDescription\"");
+                        httpRequestBodyWriter.write("\n\n");
+                        httpRequestBodyWriter.write("Log file for 20150208");
+
+                        httpRequestBodyWriter.write("\n--" + boundaryString + "\n");
+                        httpRequestBodyWriter.write("Content-Disposition: form-data;"
+                                + "name=\"file\";"
+                                + "filename=\""+ logFileToUpload.getName() +"\""
+                                + "\nContent-Type: text/plain\n\n");
+                        httpRequestBodyWriter.flush();
+
+                        FileInputStream inputStreamToLogFile = new FileInputStream(logFileToUpload);
+
+                        int bytesRead;
+                        byte[] dataBuffer = new byte[1024];
+                        while((bytesRead = inputStreamToLogFile.read(dataBuffer)) != -1) {
+                            outputStreamToRequestBody.write(dataBuffer, 0, bytesRead);
+                        }
+                        outputStreamToRequestBody.flush();
+                        httpRequestBodyWriter.write("\n--" + boundaryString + "--\n");
+                        httpRequestBodyWriter.flush();
+
+                        outputStreamToRequestBody.close();
+                        httpRequestBodyWriter.close();*/
 
 
-                        MultipartEntity reqEntity = new MultipartEntity();
-                        reqEntity.addPart("file", bin);
-                        reqEntity.addPart("paramName", paramValue);
+                        RequestQueue queue = Volley.newRequestQueue(getContext());
+                        String url ="http://192.168.43.204:8080/uploadFile";
 
-                        httppost.setEntity(reqEntity);
+                    // Request a string response from the provided URL.
+                    SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, url,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    Toast.makeText(getContext(), "okkkk",
+                                            Toast.LENGTH_LONG).show();
+                                    System.out.println("------------------------------------------------------------------------------------");
+                                    System.out.println(response);
+                                    System.out.println("------------------------------------------------------------------------------------");
 
-                        HttpResponse response = httpclient.execute(httppost);
-                        HttpEntity resEntity = response.getEntity();
+                                }
+                            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getContext(), "Server not responding ....",
+                                    Toast.LENGTH_LONG).show();
 
-                        String postResponse = response.getStatusLine();
-                    } catch (Exception e) {
-                        // show error
-                    }
+                        }
+                    });
+                    smr.addFile("file", AudioSavePathInDevice);
+
+                    queue.add(smr);
+
 
                 }else{
                     isRecording=true;
@@ -140,9 +210,12 @@ public class Songs extends Fragment {
 
 
                         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.RAW_AMR);
-                        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+                        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_WB);
+                        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
+                        mediaRecorder.setAudioSamplingRate(16000);
                         mediaRecorder.setOutputFile(AudioSavePathInDevice);
+
                     try {
                         mediaRecorder.prepare();
                         mediaRecorder.start();
