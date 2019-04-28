@@ -129,54 +129,8 @@ public class Songs extends Fragment {
                     mediaRecorder.stop();
                     isRecording=false;
 
-
-
-
-
-                       /* URL serverUrl =
-                                new URL("http://192.168.43.204:8080/uploadFile");
-                        HttpURLConnection urlConnection = (HttpURLConnection) serverUrl.openConnection();
-
-                        String boundaryString = "----SomeRandomText";
-                        String fileUrl = AudioSavePathInDevice;
-                        File logFileToUpload = new File(fileUrl);
-
-                        urlConnection.setDoOutput(true);
-                        urlConnection.setRequestMethod("POST");
-                        urlConnection.addRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundaryString);
-
-                        OutputStream outputStreamToRequestBody = urlConnection.getOutputStream();
-                        BufferedWriter httpRequestBodyWriter =
-                                new BufferedWriter(new OutputStreamWriter(outputStreamToRequestBody));
-                        httpRequestBodyWriter.write("\n\n--" + boundaryString + "\n");
-                        httpRequestBodyWriter.write("Content-Disposition: form-data; name=\"myFileDescription\"");
-                        httpRequestBodyWriter.write("\n\n");
-                        httpRequestBodyWriter.write("Log file for 20150208");
-
-                        httpRequestBodyWriter.write("\n--" + boundaryString + "\n");
-                        httpRequestBodyWriter.write("Content-Disposition: form-data;"
-                                + "name=\"file\";"
-                                + "filename=\""+ logFileToUpload.getName() +"\""
-                                + "\nContent-Type: text/plain\n\n");
-                        httpRequestBodyWriter.flush();
-
-                        FileInputStream inputStreamToLogFile = new FileInputStream(logFileToUpload);
-
-                        int bytesRead;
-                        byte[] dataBuffer = new byte[1024];
-                        while((bytesRead = inputStreamToLogFile.read(dataBuffer)) != -1) {
-                            outputStreamToRequestBody.write(dataBuffer, 0, bytesRead);
-                        }
-                        outputStreamToRequestBody.flush();
-                        httpRequestBodyWriter.write("\n--" + boundaryString + "--\n");
-                        httpRequestBodyWriter.flush();
-
-                        outputStreamToRequestBody.close();
-                        httpRequestBodyWriter.close();*/
-
-
                         RequestQueue queue = Volley.newRequestQueue(getContext());
-                        String url ="http://192.168.43.204:8080/uploadFile";
+                        String url ="http://192.168.43.56:8080/uploadFile";
 
                     // Request a string response from the provided URL.
                     SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, url,
