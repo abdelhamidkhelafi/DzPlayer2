@@ -11,13 +11,13 @@
     <ListView
         android:id="@+id/songsListView"
         android:layout_width="match_parent"
-        android:layout_height="502dp"
+        android:layout_height="485dp"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp" />
 
     <AbsoluteLayout
         android:layout_width="match_parent"
-        android:layout_height="58dp"
+        android:layout_height="82dp"
         android:background="@color/colorPrimary"
         android:orientation="horizontal"
         tools:layout_editor_absoluteX="16dp"
@@ -27,8 +27,8 @@
             android:id="@+id/playSongView"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:layout_x="3dp"
-            android:layout_y="14dp"
+            android:layout_x="6dp"
+            android:layout_y="27dp"
             android:background="@drawable/transparent_bg_bordered"
             app:srcCompat="@android:drawable/ic_media_play" />
 
@@ -36,8 +36,8 @@
             android:id="@+id/microView"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:layout_x="245dp"
-            android:layout_y="13dp"
+            android:layout_x="241dp"
+            android:layout_y="31dp"
             android:background="@drawable/transparent_bg_bordered"
             app:srcCompat="@android:drawable/ic_btn_speak_now"
             tools:layout_editor_absoluteX="1dp"
@@ -47,11 +47,20 @@
             android:id="@+id/stopSongView"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:layout_x="123dp"
-            android:layout_y="13dp"
+            android:layout_x="122dp"
+            android:layout_y="28dp"
             android:background="@drawable/transparent_bg_bordered"
             app:srcCompat="@android:drawable/ic_media_pause"
             tools:layout_editor_absoluteX="183dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_x="1dp"
+            android:layout_y="0dp"
+            tools:layout_editor_absoluteX="166dp"
             tools:layout_editor_absoluteY="0dp" />
 
 

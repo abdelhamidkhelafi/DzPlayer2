@@ -1,9 +1,9 @@
 package fr.univavignon.dzplayer;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import  android.support.v4.app.Fragment;
@@ -14,33 +14,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.Toast;
-
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.SimpleMultiPartRequest;
-
 import com.android.volley.toolbox.Volley;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Songs extends Fragment {
     MediaPlayer mediaPlayer ;
@@ -52,13 +35,29 @@ public class Songs extends Fragment {
     ArrayList<String> data = new ArrayList<>();
     ArrayList<Song> songsArray = new ArrayList<>();
     boolean isRecording=false;
+    SeekBar seekBar;
+    Handler handler;
+    Runnable runnable;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        handler = new Handler();
         View view = inflater.inflate(R.layout.songs,container,false);
+        seekBar = (SeekBar) view.findViewById(R.id.seekBar);
         AudioSavePathInDevice = getContext().getExternalCacheDir().getAbsolutePath()+ "/" + "AudioRecording.amr";
         // GETTING THE ARRAY LIST FROM SERVER //
+        songsArray.add(new Song("Tata ","Soolking","url"));
+        songsArray.add(new Song("Dalida ","Soolking","url"));
+        songsArray.add(new Song("Aicha ","Khelad","url"));
+        songsArray.add(new Song("Deux fois","mami","url"));
+        songsArray.add(new Song("Lundi ","Fianso","url"));
+        songsArray.add(new Song("Tata ","Soolking","url"));
+        songsArray.add(new Song("Dalida ","Soolking","url"));
+        songsArray.add(new Song("Aicha ","Khelad","url"));
+        songsArray.add(new Song("Deux fois","mami","url"));
+        songsArray.add(new Song("Lundi ","Fianso","url"));
         songsArray.add(new Song("Tata ","Soolking","url"));
         songsArray.add(new Song("Dalida ","Soolking","url"));
         songsArray.add(new Song("Aicha ","Khelad","url"));
@@ -86,15 +85,41 @@ public class Songs extends Fragment {
 
                 try {
                    // mediaPlayer.reset();
-                    mediaPlayer.setDataSource(AudioSavePathInDevice);
+                    Uri mediaPath = Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.raw.ob);
+                    mediaPlayer.setDataSource(getContext().getApplicationContext(), mediaPath);
                     mediaPlayer.prepare();
+                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                            seekBar.setMax(mediaPlayer.getDuration());
+                            playCycle();
+                            mediaPlayer.start();
+                        }
+                    });
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                mediaPlayer.start();
-                Toast.makeText(getContext(), "Recording Playing",
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        if(fromUser){
+                            mediaPlayer.seekTo(progress);
+                        }
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                });
+                Toast.makeText(getContext(), "Playing",
                         Toast.LENGTH_LONG).show();
 
             }
@@ -188,6 +213,8 @@ public class Songs extends Fragment {
             }
         });
 
+
+
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -206,6 +233,19 @@ public class Songs extends Fragment {
     public void setMediaRecorder (MediaRecorder m){
         mediaRecorder = m;
 
+    }
+
+    public void playCycle(){
+        seekBar.setProgress(mediaPlayer.getCurrentPosition());
+        if(mediaPlayer.isPlaying()){
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+                        playCycle();
+                }
+            };
+            handler.postDelayed(runnable,1000);
+        }
     }
 
 
