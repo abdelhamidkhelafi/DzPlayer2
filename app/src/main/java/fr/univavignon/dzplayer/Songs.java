@@ -20,10 +20,17 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.error.VolleyError;
+import com.android.volley.request.JsonObjectRequest;
 import com.android.volley.request.SimpleMultiPartRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Songs extends Fragment {
     MediaPlayer mediaPlayer ;
@@ -38,7 +45,9 @@ public class Songs extends Fragment {
     SeekBar seekBar;
     Handler handler;
     Runnable runnable;
-
+    RequestQueue queue ;
+    boolean paused =false;
+    final List<String> ACTIONS= Arrays.asList("augmenter","baisser","jouer","pause","reprendre","arrêter");
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -67,7 +76,7 @@ public class Songs extends Fragment {
         for(Song song :songsArray){
             data.add("♬ "+song.getSinger()+" "+song.getName());
         }
-
+        queue = Volley.newRequestQueue(getContext());
 
         ArrayAdapter<String> adapter  = new ArrayAdapter<String>(
                 getContext(),
@@ -154,19 +163,55 @@ public class Songs extends Fragment {
                     mediaRecorder.stop();
                     isRecording=false;
 
-                        RequestQueue queue = Volley.newRequestQueue(getContext());
-                        String url ="http://192.168.43.56:8080/uploadFile";
+
+                        String url ="http://192.168.0.14:8080/uploadFile";
 
                     // Request a string response from the provided URL.
                     SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, url,
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-                                    Toast.makeText(getContext(), "okkkk",
-                                            Toast.LENGTH_LONG).show();
-                                    System.out.println("------------------------------------------------------------------------------------");
-                                    System.out.println(response);
-                                    System.out.println("------------------------------------------------------------------------------------");
+
+                                    try{
+                                        JSONObject responseJson = new JSONObject(response);
+
+                                        Toast.makeText(getContext(), responseJson.getString("text"),
+                                                Toast.LENGTH_SHORT).show();
+
+                                        JSONObject getparams = new JSONObject();
+                                        getparams.put("requete",responseJson.getString("text"));
+                                            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                                                "http://192.168.0.14:8080/action/", getparams,
+                                                new Response.Listener<JSONObject>() {
+                                                    @Override
+                                                    public void onResponse(JSONObject response) {
+                                                        try {
+
+
+                                                            actionHandler(response);
+
+                                                        }catch (Exception e){
+
+                                                        }
+
+                                                    }
+
+
+                                                },
+                                                new Response.ErrorListener() {
+                                                    @Override
+                                                    public void onErrorResponse(VolleyError error) {
+                                                        Toast.makeText(getContext(), "erreur serveur 2",
+                                                                Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                        queue.add(jsonObjReq);
+                                    }catch (Exception e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+
+
 
                                 }
                             }, new Response.ErrorListener() {
@@ -248,7 +293,84 @@ public class Songs extends Fragment {
         }
     }
 
+    private void actionHandler(JSONObject response){
+        try{
+            switch(response.getString("action") ) {
+                case "augmenter":
 
+                    break;
+
+                case "baisser":
+
+                    break;
+
+                case "jouer":
+                        if(mediaPlayer.isPlaying())
+                        {
+                            mediaPlayer.reset();
+                        }
+                    try {
+                        // mediaPlayer.reset();
+                        Uri mediaPath = Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.raw.ob);
+                        mediaPlayer.setDataSource(getContext().getApplicationContext(), mediaPath);
+                        mediaPlayer.prepare();
+                        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            @Override
+                            public void onPrepared(MediaPlayer mp) {
+                                seekBar.setMax(mediaPlayer.getDuration());
+                                playCycle();
+                                mediaPlayer.start();
+                            }
+                        });
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+                    break;
+                case "pause":
+                    if(mediaPlayer.isPlaying())
+                    {
+                        mediaPlayer.pause();
+                        paused =true;
+                    }
+                    break;
+                case "reprendre":
+                    if(paused)
+                    {
+
+                            mediaPlayer.start();
+
+                    }else{
+                        Toast.makeText(getContext(),  "the media play wasn't in pause",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+
+                    break;
+                case "arrêter":
+
+                    if(mediaPlayer.isPlaying() || paused)
+                    {
+                        mediaPlayer.stop();
+                        mediaPlayer.reset();
+                    }
+                    break;
+            }
+
+        }catch (Exception e)
+        {
+
+        }
+    }
+
+    private String chercherSon(String s)
+    {
+
+        return null;
+    }
 
 
 
