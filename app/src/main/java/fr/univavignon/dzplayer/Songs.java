@@ -1,4 +1,5 @@
 package fr.univavignon.dzplayer;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -48,6 +49,7 @@ public class Songs extends Fragment {
     RequestQueue queue ;
     boolean paused =false;
     final List<String> ACTIONS= Arrays.asList("augmenter","baisser","jouer","pause","reprendre","arrêter");
+    AudioManager audioManager;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class Songs extends Fragment {
         View view = inflater.inflate(R.layout.songs,container,false);
         seekBar = (SeekBar) view.findViewById(R.id.seekBar);
         AudioSavePathInDevice = getContext().getExternalCacheDir().getAbsolutePath()+ "/" + "AudioRecording.amr";
+        audioManager = (AudioManager) getContext().getSystemService(getContext().AUDIO_SERVICE);
         // GETTING THE ARRAY LIST FROM SERVER //
         songsArray.add(new Song("Tata ","Soolking","url"));
         songsArray.add(new Song("Dalida ","Soolking","url"));
@@ -110,24 +113,8 @@ public class Songs extends Fragment {
                     e.printStackTrace();
                 }
 
-                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        if(fromUser){
-                            mediaPlayer.seekTo(progress);
-                        }
-                    }
 
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-
-                    }
-                });
+                initSeekBarListner();
                 Toast.makeText(getContext(), "Playing",
                         Toast.LENGTH_LONG).show();
 
@@ -297,10 +284,11 @@ public class Songs extends Fragment {
         try{
             switch(response.getString("action") ) {
                 case "augmenter":
-
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamVolume(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))+1, 0);
                     break;
 
                 case "baisser":
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamVolume(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))-1, 0);
 
                     break;
 
@@ -310,6 +298,7 @@ public class Songs extends Fragment {
                             mediaPlayer.reset();
                         }
                     try {
+                        // reste a reconnaitre la chanson ...
                         // mediaPlayer.reset();
                         Uri mediaPath = Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.raw.ob);
                         mediaPlayer.setDataSource(getContext().getApplicationContext(), mediaPath);
@@ -326,9 +315,7 @@ public class Songs extends Fragment {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
-
-
+                    initSeekBarListner();
                     break;
                 case "pause":
                     if(mediaPlayer.isPlaying())
@@ -371,6 +358,29 @@ public class Songs extends Fragment {
 
         return null;
     }
+
+    private void initSeekBarListner(){
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(fromUser){
+                    mediaPlayer.seekTo(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+    }
+
 
 
 
